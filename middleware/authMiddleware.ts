@@ -25,5 +25,5 @@ export function authenticate(req: NextApiRequest, res: NextApiResponse, next: ()
 }
 
 export const config = {
-    matcher: '/dashboard/:userID'//path
+    matcher: '/dashboard/{userID}'//path
 }

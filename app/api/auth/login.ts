@@ -3,8 +3,12 @@ import prisma from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 import jwt from 'jsonwebtoken'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'hello vaibhav'
-export default async function login(req: NextApiRequest, res: NextApiResponse) {
+const JWT_SECRET = process.env.JWT_SECRET
+
+export default async function POST(req: NextApiRequest, res: NextApiResponse) {
+    if (!JWT_SECRET) {
+        return res.status(400).json({ message: "Missing jwt secret" })
+    }
     const { username, password } = req.body
 
     if (!username || !password) {
