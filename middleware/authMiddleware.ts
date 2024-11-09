@@ -23,3 +23,7 @@ export function authenticate(req: NextApiRequest, res: NextApiResponse, next: ()
         return res.status(403).json({ message: "Invalid or expired token" })
     }
 }
+
+export const config = {
+    matcher: '/dashboard/:userID'//path
+}
