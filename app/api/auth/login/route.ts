@@ -1,18 +1,18 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 import jwt from 'jsonwebtoken'
+import { NextResponse } from "next/server";
 
 const JWT_SECRET = process.env.JWT_SECRET
 
-export default async function POST(req: NextApiRequest, res: NextApiResponse) {
+export default async function POST(req: Request) {
     if (!JWT_SECRET) {
-        return res.status(400).json({ message: "Missing jwt secret" })
+        return NextResponse.json({ message: "Jwt secret missing" }, { status: 500 })
     }
-    const { username, password } = req.body
+    const { username, password } = await req.json()
 
     if (!username || !password) {
-        return res.status(400).json({ message: "Username and Password are required" })
+        return NextResponse.json({ message: "username and password are required" }, { status: 400 })
     }
 
     try {
@@ -23,12 +23,13 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
         })
 
         if (!user || !bcrypt.compare(password, user.password)) {
-            return res.status(400).json({ message: "Invalid username or password" })
+            return NextResponse.json({ message: "Invalid username or password" }, { status: 400 })
         }
         const token = jwt.sign({ userID: user.id }, JWT_SECRET, { expiresIn: '1h' })
-        return res.status(200).json({ message: "Login successfult", token })
+        return NextResponse.json({ message: "User logged in", token: token }, { status: 200 })
     }
     catch (error) {
-        return res.status(500).json({ message: "Internal Server Error" })
+        return NextResponse.json({ message: "Internal Server Error" }, { status: 500 })
     }
 }
+
