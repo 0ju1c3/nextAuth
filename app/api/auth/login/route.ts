@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 const JWT_SECRET = process.env.JWT_SECRET
 
-export default async function POST(req: Request) {
+export async function POST(req: Request) {
     if (!JWT_SECRET) {
         return NextResponse.json({ message: "Jwt secret missing" }, { status: 500 })
     }
